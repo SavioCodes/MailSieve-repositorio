@@ -1,0 +1,43 @@
+{
+  "name": "mailsieve",
+  "version": "0.2.0",
+  "description": "MailSieve API - detector de e-mail descartavel com risco lite",
+  "main": "dist/src/server.js",
+  "type": "commonjs",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "start": "node dist/src/server.js",
+    "dev": "tsx src/server.ts",
+    "test": "npm run build && jest --runInBand --config jest.config.cjs",
+    "test:watch": "npm run build && jest --watch --config jest.config.cjs",
+    "verify": "npm run build && node scripts/verify_e2e.js",
+    "keys:create": "node scripts/manage_api_keys.js create",
+    "keys:revoke": "node scripts/manage_api_keys.js revoke",
+    "keys:list": "node scripts/manage_api_keys.js list",
+    "keys:rotate": "node scripts/manage_api_keys.js rotate",
+    "update:disposable-list": "node scripts/update_disposable_list.js",
+    "report:usage": "node scripts/export_usage_report.js",
+    "smoke:deploy": "node scripts/smoke_deploy.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "helmet": "^8.1.0",
+    "pino": "^9.6.0",
+    "zod": "^3.24.2"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "@types/jest": "^29.5.14",
+    "@types/node": "^22.13.4",
+    "@types/supertest": "^6.0.2",
+    "jest": "^29.7.0",
+    "supertest": "^7.0.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.8.2"
+  }
+}

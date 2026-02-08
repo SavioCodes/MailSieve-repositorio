@@ -1,0 +1,271 @@
+openapi: 3.0.3
+info:
+  title: MailSieve
+  version: 0.2.0
+  description: |
+    API para detecção de e-mail descartável e risco lite.
+
+    SUPOSIÇÃO: contratos HTTP definidos localmente por ausência de schema explícito na fonte validada.
+servers:
+  - url: http://localhost:3000
+security:
+  - ApiKeyAuth: []
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: x-api-key
+  schemas:
+    ErrorDetail:
+      type: object
+      required: [field, reason]
+      properties:
+        field:
+          type: string
+        reason:
+          type: string
+    ErrorResponse:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: object
+          required: [code, message, request_id, details]
+          properties:
+            code:
+              type: string
+              enum:
+                - auth_missing
+                - auth_invalid
+                - invalid_request
+                - invalid_json
+                - not_found
+                - rate_limited
+                - internal_error
+                - provider_unavailable
+            message:
+              type: string
+            request_id:
+              type: string
+              nullable: true
+            details:
+              type: array
+              items:
+                $ref: '#/components/schemas/ErrorDetail'
+    DetectionMeta:
+      type: object
+      required: [list_version, cache_hit, processing_ms, provider_status]
+      properties:
+        list_version:
+          type: string
+        cache_hit:
+          type: boolean
+        processing_ms:
+          type: integer
+        provider_status:
+          type: string
+          enum: [disabled, ok]
+    DetectionResult:
+      type: object
+      required:
+        - email
+        - normalized_email
+        - domain
+        - is_disposable
+        - risk_level
+        - signals
+        - meta
+      properties:
+        email:
+          type: string
+        normalized_email:
+          type: string
+        domain:
+          type: string
+        is_disposable:
+          type: boolean
+        risk_level:
+          type: string
+          enum: [low, medium, high]
+        signals:
+          type: array
+          items:
+            type: string
+        meta:
+          $ref: '#/components/schemas/DetectionMeta'
+    GenerateRequest:
+      type: object
+      required: [email]
+      properties:
+        email:
+          type: string
+          format: email
+      additionalProperties: false
+    BatchRequest:
+      type: object
+      required: [emails]
+      properties:
+        emails:
+          type: array
+          minItems: 1
+          items:
+            type: string
+            format: email
+        concurrency:
+          type: integer
+          minimum: 1
+      additionalProperties: false
+    HealthResponse:
+      type: object
+      required: [status, name, version, uptime_s]
+      properties:
+        status:
+          type: string
+          enum: [ok]
+        name:
+          type: string
+          example: MailSieve
+        version:
+          type: string
+        uptime_s:
+          type: integer
+paths:
+  /v1/health:
+    get:
+      summary: Verifica saúde da API
+      responses:
+        '200':
+          description: Serviço ativo
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+              example:
+                status: ok
+                name: MailSieve
+                version: 0.2.0
+                uptime_s: 12
+        '401':
+          description: Falha de autenticação
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Rota não encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Erro interno
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /v1/generate:
+    post:
+      summary: Analisa um e-mail
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GenerateRequest'
+            example:
+              email: teste@mailinator.com
+      responses:
+        '200':
+          description: Resultado da análise
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DetectionResult'
+        '400':
+          description: Erro de validação
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Falha de autenticação
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Rota não encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limit excedido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Erro interno ou indisponibilidade de provedor opcional
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /v1/batch:
+    post:
+      summary: Analisa uma lista de e-mails
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BatchRequest'
+            example:
+              emails:
+                - um@mailinator.com
+                - dois@gmail.com
+              concurrency: 2
+      responses:
+        '200':
+          description: Resultado do lote
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [results]
+                properties:
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/DetectionResult'
+        '400':
+          description: Erro de validação
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Falha de autenticação
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: Rota não encontrada
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limit excedido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Erro interno ou indisponibilidade de provedor opcional
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'

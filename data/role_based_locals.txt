@@ -1,0 +1,12 @@
+admin
+support
+sales
+contact
+info
+hello
+webmaster
+noreply
+no-reply
+team
+billing
+help
