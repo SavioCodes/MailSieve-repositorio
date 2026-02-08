@@ -227,3 +227,24 @@
 
 1. Repetir o comando `npm run smoke:deploy` com `BASE_URL` e `API_KEY` validos.
 2. Conferir logs de runtime no painel do Render.
+
+## 2026-02-08 (ajuste smoke deploy no Windows)
+
+### FATOS
+
+- `scripts/smoke_deploy.js` foi ajustado para nao forcar `process.exit(1)` em erro.
+- Com isso, em ambiente Windows, o comando deixa de exibir o erro:
+  - `Assertion failed: !(handle->flags & UV_HANDLE_CLOSING), file src\\win\\async.c, line 76`
+- O script continua retornando exit code `1` quando falha e `0` quando passa.
+
+### SUPOSICOES
+
+- O problema era efeito colateral de encerramento forcado do processo com handles async ainda abertos.
+
+### COMO VALIDAR
+
+1. Executar `npm run smoke:deploy` com chave invalida e confirmar:
+   - erro de auth exibido,
+   - sem mensagem de assertion do Node.
+2. Executar novamente com chave valida e confirmar:
+   - `OK: smoke deploy passou`.

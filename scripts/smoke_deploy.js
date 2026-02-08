@@ -4,7 +4,15 @@ const apiKey = process.env.API_KEY || '';
 
 if (!baseUrl || !apiKey) {
   console.error('Uso: BASE_URL=<url> API_KEY=<key> npm run smoke:deploy');
-  process.exit(1);
+  process.exitCode = 1;
+} else {
+  run().catch((error) => {
+    console.error(`Smoke deploy falhou: ${error instanceof Error ? error.message : 'erro desconhecido'}`);
+    if (error && typeof error === 'object' && 'result' in error && error.result) {
+      console.error(JSON.stringify(error.result, null, 2));
+    }
+    process.exitCode = 1;
+  });
 }
 
 async function request(method, routePath, body, withAuth = true) {
@@ -30,11 +38,9 @@ async function request(method, routePath, body, withAuth = true) {
 
 function ensure(condition, message, result) {
   if (!condition) {
-    console.error(message);
-    if (result) {
-      console.error(JSON.stringify(result, null, 2));
-    }
-    process.exit(1);
+    const error = new Error(message);
+    error.result = result;
+    throw error;
   }
 }
 
@@ -56,8 +62,3 @@ async function run() {
 
   console.log('OK: smoke deploy passou.');
 }
-
-run().catch((error) => {
-  console.error(`Smoke deploy falhou: ${error instanceof Error ? error.message : 'erro desconhecido'}`);
-  process.exit(1);
-});
