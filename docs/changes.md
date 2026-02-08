@@ -206,3 +206,24 @@
 
 1. Abrir `docs/prompt1-source.md` e conferir links/referencias.
 2. Revisar rapidamente se os fatos listados batem com as paginas oficiais.
+
+## 2026-02-08 (deploy publico validado)
+
+### FATOS
+
+- Deploy publico ativo no Render:
+  - `https://mailsieve-repositorio.onrender.com`
+- Validacao do endpoint publico:
+  - `GET /v1/health` com `x-api-key` retornou `200`.
+- Smoke test de deploy executado com sucesso:
+  - `BASE_URL=https://mailsieve-repositorio.onrender.com API_KEY=<key_ativa> npm run smoke:deploy`
+  - retorno: `OK: smoke deploy passou`.
+
+### SUPOSICOES
+
+- Plano Free pode entrar em hibernacao e atrasar o primeiro request apos inatividade.
+
+### COMO VALIDAR
+
+1. Repetir o comando `npm run smoke:deploy` com `BASE_URL` e `API_KEY` validos.
+2. Conferir logs de runtime no painel do Render.

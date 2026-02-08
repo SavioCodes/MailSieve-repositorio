@@ -5,7 +5,7 @@ Atualizado em: 2026-02-08
 ## Status geral (verdadeiro, sem omissao)
 
 - Finalizacao tecnica local: **CONCLUIDA**.
-- Bloqueios restantes para "100% finalizado para venda": **1 item externo**.
+- Bloqueios restantes para "100% finalizado para venda": **0 item externo**.
 - Nao existem pendencias de codigo/infra local identificadas nesta auditoria.
 
 ## Checklist de conclusao
@@ -21,7 +21,7 @@ Atualizado em: 2026-02-08
   - `POST /v1/batch` -> 200 com auth
   - `POST /v1/generate` sem auth -> 401
 - [x] Apenas 3 endpoints publicos no codigo e no OpenAPI.
-- [ ] Deploy publico real validado (bloqueio externo).
+- [x] Deploy publico real validado (Render + smoke test).
 - [x] `docs/prompt1-source.md` consolidado com pesquisa publica verificavel.
 
 ## Estado atual (checado agora)
@@ -58,13 +58,11 @@ Atualizado em: 2026-02-08
 
 ### P0-1: Validacao de deploy em host real
 
-- Status: PENDENTE
-- Motivo real: depende de credenciais/conta de hospedagem que nao existem neste workspace.
-- Como fechar:
-  1. Escolher host (free tier ou VPS).
-  2. Publicar a imagem.
-  3. Executar `BASE_URL=<url> API_KEY=<key> npm run smoke:deploy`.
-  4. Registrar evidencias em `docs/changes.md`.
+- Status: CONCLUIDO
+- Evidencia:
+  1. URL publica: `https://mailsieve-repositorio.onrender.com`
+  2. Teste direto: `GET /v1/health` com `x-api-key` retornou `200`.
+  3. `npm run smoke:deploy` retornou `OK: smoke deploy passou`.
 
 ### P0-2: Fonte completa do Prompt 1
 
@@ -81,9 +79,10 @@ Atualizado em: 2026-02-08
 
 1. Deploy real validado e registrado em `docs/changes.md`.
 2. Reexecutar: `npm test`, `npm run verify`, `docker build`.
+3. Status final: `CONCLUIDO` (pendencias P0 fechadas).
 
 ## COMO VALIDAR
 
 1. Confirmar que `npm test`, `npm run verify` e `docker build` seguem passando.
-2. Validar que o P0 de deploy publico foi concluido.
-3. Atualizar este arquivo para `Status: CONCLUIDO` quando o deploy publico for fechado.
+2. Executar `BASE_URL=https://mailsieve-repositorio.onrender.com API_KEY=<key_ativa> npm run smoke:deploy`.
+3. Confirmar retorno `OK: smoke deploy passou`.
