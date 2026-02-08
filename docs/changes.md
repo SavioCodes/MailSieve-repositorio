@@ -157,3 +157,52 @@
 2. Reexecutar `npm run report:usage` e confirmar `reports/usage-report.json`.
 3. Reexecutar build Docker.
 4. Verificar pendencias externas em `docs/tasks-finalizacao.md`.
+
+## 2026-02-08 (auditoria final completa)
+
+### FATOS
+
+- Auditoria full executada no workspace com validacoes locais:
+  - `npm test` -> OK
+  - `npm run verify` -> OK
+  - `npm run report:usage` -> OK
+  - `npm run update:disposable-list` -> OK (sem URL, retorna mensagem clara)
+  - `docker build -t mailsieve:local .` -> OK
+- Runtime Docker validado com chamadas HTTP reais em container:
+  - `GET /v1/health` com auth -> `200`
+  - `POST /v1/generate` com auth -> `200`
+  - `POST /v1/batch` com auth -> `200`
+  - `POST /v1/generate` sem auth -> `401`
+- Confirmado novamente: apenas 3 endpoints publicos no codigo e no `openapi.yaml`.
+- `git status` limpo apos auditoria.
+
+### SUPOSICOES
+
+- Nao ha como concluir publicacao real na RapidAPI sem acesso de conta/painel.
+- Nao ha como completar a fonte integral do Prompt 1 sem o texto integral fornecido pelo usuario.
+
+### COMO VALIDAR
+
+1. Reexecutar os comandos tecnicos listados nesta secao.
+2. Publicar em host publico real e rodar `npm run smoke:deploy`.
+3. Inserir o texto integral em `docs/prompt1-source.md`.
+
+## 2026-02-08 (fonte consolidada com pesquisa publica)
+
+### FATOS
+
+- `docs/prompt1-source.md` foi reescrito com base em fontes publicas verificaveis:
+  - busca/curadorias da RapidAPI,
+  - monetizacao e payout da RapidAPI,
+  - repositorio CC0 de dominios descartaveis,
+  - limites/pricing de Cloudflare Workers.
+- O novo arquivo separa `FATOS`, `INFERENCIAS`, `PROPOSTA`, `SUPOSICOES` e `NAO CONFIRMADO`.
+
+### SUPOSICOES
+
+- A nova versao fecha rastreabilidade tecnica da ideia, mas nao e transcricao literal do texto integral original do Prompt 1.
+
+### COMO VALIDAR
+
+1. Abrir `docs/prompt1-source.md` e conferir links/referencias.
+2. Revisar rapidamente se os fatos listados batem com as paginas oficiais.

@@ -1,4 +1,25 @@
 {
   "version": 2,
-  "keys": []
+  "keys": [
+    {
+      "id": "key_c09266649bd9",
+      "name": "prod_main",
+      "status": "revoked",
+      "created_at": "2026-02-08T17:55:37.896Z",
+      "revoked_at": "2026-02-08T18:33:29.643Z",
+      "rotated_to_id": "key_8935d3c5e5ad",
+      "key_hash": "ef13b3e1cfe5625927e1878b0ec2ffeb4dd961e8d36681cccb9d67d820dce3fc",
+      "salt": "162b0f52b574d2abb2ebb56f31c52b12"
+    },
+    {
+      "id": "key_8935d3c5e5ad",
+      "name": "prod_main_v2",
+      "status": "active",
+      "created_at": "2026-02-08T18:33:29.643Z",
+      "revoked_at": null,
+      "rotated_to_id": null,
+      "key_hash": "ac7892aa4ba24ea031afde6c4cd4013f90ebac0e57e9d77ee2f08fc5651be450",
+      "salt": "d9d2e97ee6f169425a9fc11c4be0448d"
+    }
+  ]
 }

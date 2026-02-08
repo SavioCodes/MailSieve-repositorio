@@ -1,49 +1,61 @@
 # Prompt 1 Source
 
-## FATOS (fonte recebida no workspace)
+Status: fonte consolidada com pesquisa publica em 2026-02-08 (sem inventar dados nao confirmados).
 
-- O texto completo do Prompt 1 NAO foi fornecido integralmente neste workspace.
-- Apenas um trecho parcial foi disponibilizado.
-- O projeto deve manter comportamento funcional usando somente fatos confirmados e suposicoes explicitadas.
+## FATOS (confirmados por fonte publica)
 
-## SUPOSICOES
+1. Existe busca da RapidAPI com ordenacao por tendencia (`sortBy=ByTrending`).  
+   Fonte: [RapidAPI Search](https://rapidapi.com/search?sortBy=ByTrending&utm_source=chatgpt.com)
+2. Existe curadoria publica da RapidAPI para Email Validation/Verification.  
+   Fonte: [Top Email Validation and Verification APIs](https://rapidapi.com/collection/email-validation-verification-api?utm_source=chatgpt.com)
+3. Existe curadoria publica da RapidAPI para Security APIs.  
+   Fonte: [Top Security APIs](https://rapidapi.com/collection/list-of-security-apis?utm_source=chatgpt.com)
+4. A documentacao de monetizacao da RapidAPI traz referencia de limites de free plan e exemplo de estrutura de planos/precos.  
+   Fonte: [Monetizing Your API on rapidapi.com](https://docs.rapidapi.com/docs/monetizing-your-api-on-rapidapicom)
+5. A documentacao de payout da RapidAPI informa fee de marketplace de 25% e payout via PayPal (USD), com observacao de taxa PayPal variavel por pais.  
+   Fonte: [How are payouts calculated?](https://rapidapi.zendesk.com/hc/en-us/articles/19308532866068-How-are-payouts-calculated)
+6. O repositorio `di/martenson-disposable-email-domains` informa licenca CC0 e lista de dominios descartaveis.  
+   Fonte: [GitHub repo](https://github.com/di/martenson-disposable-email-domains)
+7. A documentacao da Cloudflare Workers informa limites do plano Free e referencia de precificacao do plano pago.  
+   Fontes:
+   - [Workers limits](https://developers.cloudflare.com/workers/platform/limits/)
+   - [Workers pricing](https://developers.cloudflare.com/workers/platform/pricing/)
 
-- Enquanto o texto integral nao for colado aqui, este arquivo permanece parcial.
-- Nenhuma informacao fora do trecho abaixo deve ser tratada como fato.
+## INFERENCIAS (derivadas dos fatos, sem afirmar como dado interno)
 
-## COMO VALIDAR
+1. Curadorias de Email e Security indicam relevancia editorial desses temas dentro do marketplace.
+2. Para MVP de baixo custo, uma API de lookup local (lista + cache + heuristicas leves) tende a custo operacional previsivel.
+3. Diferenciacao por explicabilidade (`signals`) pode reduzir comoditizacao frente a respostas apenas booleanas.
 
-1. Localize o texto integral do Prompt 1 usado na validacao da ideia.
-2. Substitua este conteudo pelo texto completo, sem cortes.
-3. Revalide os documentos que dependem da fonte:
-   - `docs/overview.md`
-   - `docs/decisions.md`
-   - `docs/tradeoffs.md`
-   - `docs/publishing-and-getting-paid.md`
+## PROPOSTA CONSOLIDADA (com base na pesquisa)
 
----
+- Nome final: **MailSieve**.
+- Produto: detector de e-mail descartavel + risco "lite" (sem SMTP).
+- Operacao principal: local/offline por padrao (lista CC0 + cache + heuristicas explicaveis).
+- Integracao de provedor/modelo: opcional e generica; nao obrigatoria para o core.
 
-NAO HA DADOS SUFICIENTES: o texto completo do Prompt 1 nao foi fornecido ao Codex; cole aqui para completar.
+## SUPOSICOES (necessarias por ausencia de definicao explicita)
 
-## Trecho parcial recebido
+1. Contrato HTTP detalhado de `/v1/generate` e `/v1/batch` foi definido localmente para manter consistencia tecnica.
+2. Valores default de rate limit, timeout, batch e TTL foram parametrizados por `.env` como baseline conservador.
+3. Politica de retencao operacional foi definida como configuravel para evitar dependencia de regra fixa nao documentada na fonte.
 
-[COMECO DA FONTE COMPLETA]
-## Resumo executivo (ate 6 pontos)
+## NAO CONFIRMADO (e como validar)
 
-1. [FATO] A RapidAPI nao publica um "ranking oficial" aberto de demanda por categoria (ex.: receita/assinantes por vertical). O que existe publicamente sao colecoes/curadorias, paginas de busca (ex.: "ByTrending") e sinais por API (pricing, reviews etc.). (Acesso em 08/02/2026). ([RapidAPI][1])
-2. [FATO] Ha curadorias explicitas para Email (inclui validacao/verificacao) e Security, o que e um sinal publico de relevancia desses temas dentro do marketplace. (Acesso em 08/02/2026). ([RapidAPI][2])
-3. [FATO] A RapidAPI recomenda estrutura de planos e informa limites do free plan (1000 req/h e 500k req/mes) e uma sugestao de precos (BASIC free, PRO $25, ULTRA $75, MEGA $150). (Acesso em 08/02/2026). ([RapidAPI][3])
-4. [FATO] Para payout, ha referencia publica de 25% de fee do marketplace e que payout ocorre via PayPal (USD), com taxa PayPal que varia por pais e pode ser ~2% do payout (cap ate $20, conforme artigo). (Acesso em 08/02/2026). ([RapidAPI Support][4])
-5. [INFERENCIA] Com restricao de baixo custo + 0-1 integracoes pagas, a melhor aposta tende a ser uma API de validacao/risco leve (lookup + cache), porque o custo por request pode ser muito baixo e previsivel. (Raciocinio detalhado na secao 5). ([RapidAPI][3])
-6. [PROPOSTA] Melhor ideia final: detector de e-mail descartavel + risco lite (sem SMTP), com diferenciacao por explicabilidade, cache e atualizacao de lista CC0.
+1. Ranking oficial publico por receita/assinantes por categoria na RapidAPI.  
+   Como validar: revisar periodicamente docs oficiais e painel de provider da RapidAPI.
+2. Custos/limites/schema de qualquer provedor "gptcodex 5.2/5.3".  
+   Como validar: usar apenas documentacao oficial do provedor escolhido quando estiver disponivel.
+3. Texto literal completo do "Prompt 1" original do usuario.  
+   Como validar: anexar o texto integral original se houver necessidade de rastreabilidade juridica/documental literal.
 
---- (O RESTANTE DA FONTE E O TEXTO COMPLETO DO PROMPT 1. COLE TUDO INTEGRALMENTE AQUI, SEM CORTAR.) ---
+## REFERENCIAS
 
-[1]: https://rapidapi.com/search?sortBy=ByTrending&utm_source=chatgpt.com
-[2]: https://rapidapi.com/collection/email-validation-verification-api?utm_source=chatgpt.com
-[3]: https://docs.rapidapi.com/docs/monetizing-your-api-on-rapidapicom
-[4]: https://rapidapi.zendesk.com/hc/en-us/articles/19308532866068-How-are-payouts-calculated
-[14]: https://github.com/di/martenson-disposable-email-domains
-[19]: https://developers.cloudflare.com/workers/platform/limits/
-[20]: https://developers.cloudflare.com/workers/platform/pricing/
-[FIM DA FONTE COMPLETA]
+- https://rapidapi.com/search?sortBy=ByTrending&utm_source=chatgpt.com
+- https://rapidapi.com/collection/email-validation-verification-api?utm_source=chatgpt.com
+- https://rapidapi.com/collection/list-of-security-apis?utm_source=chatgpt.com
+- https://docs.rapidapi.com/docs/monetizing-your-api-on-rapidapicom
+- https://rapidapi.zendesk.com/hc/en-us/articles/19308532866068-How-are-payouts-calculated
+- https://github.com/di/martenson-disposable-email-domains
+- https://developers.cloudflare.com/workers/platform/limits/
+- https://developers.cloudflare.com/workers/platform/pricing/
