@@ -99,26 +99,38 @@ Rotacionar por `key_id`:
 ```bash
 npm run keys:rotate -- key_xxxxxxxxxxxx chave_nova
 ```
-
+  
 ## 6 exemplos curl
 
-Antes, gere uma chave e exporte:
+Antes, gere uma chave e exporte.
+
+Bash:
 
 ```bash
+BASE_URL="http://localhost:3000"
 API_KEY="<cole_a_chave_gerada_no_keys:create>"
 ```
+
+PowerShell:
+
+```powershell
+$env:BASE_URL="http://localhost:3000"
+$env:API_KEY="<cole_a_chave_gerada_no_keys:create>"
+```
+
+No PowerShell, use `curl.exe` (nao `curl`), porque `curl` e alias de `Invoke-WebRequest`.
 
 1. Health:
 
 ```bash
-curl -s http://localhost:3000/v1/health \
+curl -s "$BASE_URL/v1/health" \
   -H "x-api-key: $API_KEY"
 ```
 
 2. Generate (valido):
 
 ```bash
-curl -s -X POST http://localhost:3000/v1/generate \
+curl -s -X POST "$BASE_URL/v1/generate" \
   -H "content-type: application/json" \
   -H "x-api-key: $API_KEY" \
   -d '{"email":"user@mailinator.com"}'
@@ -127,7 +139,7 @@ curl -s -X POST http://localhost:3000/v1/generate \
 3. Batch (valido):
 
 ```bash
-curl -s -X POST http://localhost:3000/v1/batch \
+curl -s -X POST "$BASE_URL/v1/batch" \
   -H "content-type: application/json" \
   -H "x-api-key: $API_KEY" \
   -d '{"emails":["um@mailinator.com","dois@gmail.com"],"concurrency":2}'
@@ -136,7 +148,7 @@ curl -s -X POST http://localhost:3000/v1/batch \
 4. Erro de auth:
 
 ```bash
-curl -s -X POST http://localhost:3000/v1/generate \
+curl -s -X POST "$BASE_URL/v1/generate" \
   -H "content-type: application/json" \
   -d '{"email":"user@mailinator.com"}'
 ```
@@ -145,7 +157,7 @@ curl -s -X POST http://localhost:3000/v1/generate \
 
 ```bash
 for i in {1..100}; do
-  curl -s -o /dev/null -w "%{http_code}\n" -X POST http://localhost:3000/v1/generate \
+  curl -s -o /dev/null -w "%{http_code}\n" -X POST "$BASE_URL/v1/generate" \
     -H "content-type: application/json" \
     -H "x-api-key: $API_KEY" \
     -d '{"email":"user@gmail.com"}'
@@ -155,10 +167,48 @@ done
 6. Request invalida:
 
 ```bash
-curl -s -X POST http://localhost:3000/v1/generate \
+curl -s -X POST "$BASE_URL/v1/generate" \
   -H "content-type: application/json" \
   -H "x-api-key: $API_KEY" \
   -d '{"email":"invalido"}'
+```
+
+Exemplos equivalentes no PowerShell:
+
+```powershell
+# 1) health sem auth -> 401
+curl.exe -i "$env:BASE_URL/v1/health"
+
+# 2) generate valido -> 200
+curl.exe -i -X POST "$env:BASE_URL/v1/generate" `
+  -H "x-api-key: $env:API_KEY" `
+  -H "content-type: application/json" `
+  --data-raw '{"email":"user@mailinator.com"}'
+
+# 3) batch valido -> 200
+curl.exe -i -X POST "$env:BASE_URL/v1/batch" `
+  -H "x-api-key: $env:API_KEY" `
+  -H "content-type: application/json" `
+  --data-raw '{"emails":["um@mailinator.com","dois@gmail.com"],"concurrency":2}'
+
+# 4) auth faltando -> 401
+curl.exe -i -X POST "$env:BASE_URL/v1/generate" `
+  -H "content-type: application/json" `
+  --data-raw '{"email":"user@mailinator.com"}'
+
+# 5) request invalida -> 400 (schema)
+curl.exe -i -X POST "$env:BASE_URL/v1/generate" `
+  -H "x-api-key: $env:API_KEY" `
+  -H "content-type: application/json" `
+  --data-raw '{"email":"invalido"}'
+
+# 6) rate-limit -> 429 (forcando varias chamadas)
+1..120 | ForEach-Object {
+  curl.exe -s -o NUL -w "%{http_code}`n" -X POST "$env:BASE_URL/v1/generate" `
+    -H "x-api-key: $env:API_KEY" `
+    -H "content-type: application/json" `
+    --data-raw '{"email":"user@gmail.com"}'
+}
 ```
 
 ## Testes automatizados

@@ -1,29 +1,31 @@
 # Decisions
 
+Ultima atualizacao: 2026-02-08
+
 ## FATOS (da fonte validada)
 
-- Core do produto: disposable + risco lite, sem SMTP.
-- Lista local CC0 é parte do escopo.
-- Provedor externo não pode ser obrigatório para o funcionamento principal.
+- Core do produto: deteccao disposable + risco lite, sem SMTP.
+- Lista local CC0 e parte obrigatoria do escopo.
+- Provedor externo nao pode ser dependencia obrigatoria do core.
 
-## SUPOSIÇÕES (padrões escolhidos e por quê)
+## SUPOSICOES (escolhas de engenharia)
 
-- **TypeScript**: escolhido para reduzir erro de contrato e melhorar manutenção.
-- **Node 20+**: suposição para runtime moderno com `fetch` nativo.
-- **Contrato HTTP**: definido como mínimo consistente porque não veio detalhado na fonte validada.
-- **Persistência padrão em arquivo**: evita dependências nativas e custo extra.
+- Linguagem: TypeScript, para reduzir erro de contrato e melhorar manutencao.
+- Runtime: Node 20+ (padrao de projeto e `engines` no `package.json`).
+- Persistencia padrao: arquivo local (`data/`) para custo zero local.
+- Contratos HTTP: definidos localmente por falta de schema explicito na fonte.
 
-## Dependências e justificativa
+## Dependencias e motivo
 
-- `express`: servidor HTTP e roteamento.
-- `helmet`: headers básicos de segurança.
+- `express`: API HTTP.
+- `helmet`: headers basicos de seguranca.
 - `cors`: controle de origem.
-- `zod`: validação de payload e env.
-- `pino`: log estruturado com `req_id`, status e latência.
-- `jest` + `supertest`: testes offline de rotas e contratos.
-- `typescript` + `tsx`: build e execução em desenvolvimento.
+- `zod`: validacao de env e payload.
+- `pino`: logging estruturado.
+- `jest` + `supertest`: testes offline de contrato e comportamento.
+- `typescript` + `tsx`: build e execucao em desenvolvimento.
 
-## Defaults técnicos adotados (SUPOSIÇÃO)
+## Defaults tecnicos adotados
 
 - `BODY_SIZE_LIMIT=64kb`
 - `REQUEST_TIMEOUT_MS=3000`
@@ -32,19 +34,17 @@
 - `DOMAIN_CACHE_TTL_MS=3600000`
 - `MX_CACHE_TTL_MS=21600000`
 
-## Decisões de operação
+## Decisoes operacionais
 
-- API keys armazenadas com `hash+salt` em `data/api-keys.json`.
-- Rate-limit por `key_id` (não pela chave bruta).
-- Métricas agregadas por `key_id`; sem armazenar e-mail bruto por padrão.
-- `providerClient` é genérico e opcional, com timeout/retry/backoff.
-- Verificação E2E local automatizada com `npm run verify`.
-- CI executa `npm test` + `npm run verify` em push/PR.
-- Licença do código: MIT (SUPOSIÇÃO até validação jurídica).
+- API keys armazenadas com hash+salt em `data/api-keys.json`.
+- Rate-limit e metricas por `key_id` (nao por segredo bruto).
+- `providerClient` generico e opcional com timeout/retry/backoff.
+- Verificacao E2E automatizada com `npm run verify`.
+- CI com `npm test` + `npm run verify`.
 
-## COMO VALIDAR (passos práticos)
+## Como validar (passos praticos)
 
-1. `node -v` (confirmar Node 20+).
-2. `npm run build`.
-3. `npm test`.
-4. Verificar se `/v1/health` também exige `x-api-key`.
+1. `node -v` e confirmar `>=20`.
+2. `npm run build`
+3. `npm test`
+4. `npm run verify`

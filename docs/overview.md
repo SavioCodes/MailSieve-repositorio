@@ -1,39 +1,35 @@
 # Overview
 
+Ultima atualizacao: 2026-02-08
+
 ## FATOS (da fonte validada)
 
-- Nome final: `MailSieve`.
-- Produto: detector de e-mail descartável com risco "lite" (sem SMTP).
-- Diferenciais obrigatórios: `signals` explicáveis, cache e lista local CC0 atualizável.
-- Integrações externas pagas: preferência por `0`.
-- Integração com provedor/modelo: opcional, genérica e desligada por padrão.
+- Nome final do produto: `MailSieve`.
+- Escopo principal: detector de email descartavel + risco "lite", sem SMTP.
+- Diferenciais centrais: `signals` explicaveis, cache e lista local CC0 atualizavel.
+- Integracao de provedor externo e opcional; o core deve funcionar offline/local.
+- Endpoints publicos permitidos: `/v1/health`, `/v1/generate`, `/v1/batch`.
 
-## SUPOSIÇÕES (padrão adotado)
+## SUPOSICOES (padroes adotados)
 
-- Contrato HTTP mínimo foi definido localmente porque a fonte não trouxe schema de request/response.
-- Stack escolhida: Node.js + TypeScript + Express.
-- Persistência padrão: arquivos locais em `data/` para custo zero local.
+- Contrato HTTP detalhado foi definido no projeto por ausencia de schema explicito na fonte.
+- Stack escolhida: Node.js + TypeScript + Express para consistencia de manutencao.
+- Persistencia padrao em arquivo local para custo zero no desenvolvimento.
 
 ## Arquitetura resumida
 
-- `src/app.ts`: cria app Express, middlewares e 3 rotas públicas.
-- `src/services/mailsieve/*`: pipeline de detecção disposable + risco.
-- `src/services/auth/*`: valida `x-api-key` por `hash+salt`.
-- `src/services/rateLimit/*`: limite por `key_id` com janela + burst + cooldown.
-- `src/services/usage/*`: métricas agregadas por `key_id`.
-- `scripts/*`: operações de chave, update da lista e export de relatório.
+- `src/app.ts`: composicao do app, middlewares e 3 rotas publicas.
+- `src/services/auth/*`: validacao de `x-api-key` com hash+salt.
+- `src/services/rateLimit/*`: janela + burst + cooldown por `key_id`.
+- `src/services/mailsieve/*`: pipeline disposable/risk e sinais explicaveis.
+- `src/services/usage/*`: metricas agregadas por `key_id`.
+- `scripts/*`: chaves, relatorios, update de lista e verificacao E2E.
+- `docs/*`: contrato, seguranca, trade-offs e operacao.
 
-## Documentação complementar
-
-- `docs/idea-and-code-explained.md`: visão didática de ideia + código.
-- `docs/publishing-and-getting-paid.md`: fluxo prático de publicação e operação.
-- `docs/runbook-local.md`: rotação de chave, backup e incidentes.
-- `docs/prompt1-source.md`: fonte do Prompt 1 disponível no workspace.
-
-## COMO VALIDAR (passos práticos)
+## Como validar (passos praticos)
 
 1. `npm install`
-2. `Copy-Item .env.example .env` (PowerShell) ou `cp .env.example .env`
+2. `Copy-Item .env.example .env` (PowerShell) ou `cp .env.example .env` (bash)
 3. `npm test`
 4. `npm run verify`
-5. Confirmar que só existem os endpoints `/v1/health`, `/v1/generate`, `/v1/batch`.
+5. `npm run report:usage`

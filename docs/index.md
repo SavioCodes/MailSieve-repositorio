@@ -1,5 +1,7 @@
 # Docs Index
 
+Ultima atualizacao: 2026-02-08
+
 Ordem recomendada de leitura:
 
 1. `docs/overview.md`
@@ -35,4 +37,4 @@ Ordem recomendada de leitura:
 1. Rodar `npm test`.
 2. Rodar `npm run verify`.
 3. Seguir `docs/runbook-local.md` para operacao continua.
-4. Conferir pendencias externas em `docs/tasks-finalizacao.md`.
+4. Conferir status final de release em `docs/tasks-finalizacao.md`.

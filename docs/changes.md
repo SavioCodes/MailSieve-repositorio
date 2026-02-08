@@ -248,3 +248,52 @@
    - sem mensagem de assertion do Node.
 2. Executar novamente com chave valida e confirmar:
    - `OK: smoke deploy passou`.
+
+## 2026-02-08 (README: comandos PowerShell corrigidos)
+
+### FATOS
+
+- README atualizado para evitar erro comum no PowerShell:
+  - `curl` (alias de `Invoke-WebRequest`) -> agora documentado para usar `curl.exe`.
+- Exemplos de request agora usam `BASE_URL` (bash) e `$env:BASE_URL` (PowerShell), evitando placeholder vazio.
+- Adicionados exemplos PowerShell completos para:
+  - health,
+  - generate,
+  - batch,
+  - auth faltando,
+  - request invalida,
+  - rate-limit.
+
+### SUPOSICOES
+
+- O shell principal de operacao para usuarios Windows sera PowerShell.
+
+### COMO VALIDAR
+
+1. Definir no PowerShell:
+   - `$env:BASE_URL`
+   - `$env:API_KEY`
+2. Executar os exemplos da secao "6 exemplos curl".
+3. Confirmar codigos esperados (`200`, `400`, `401`, `429`).
+
+## 2026-02-08 (consolidacao documental profissional)
+
+### FATOS
+
+- Documentacao reorganizada para padrao unico e consistente:
+  - `docs/overview.md` reescrito com arquitetura e validacao pratica.
+  - `docs/decisions.md` reescrito com decisoes tecnicas e defaults.
+  - `docs/publishing-and-getting-paid.md` reescrito com fluxo objetivo de publicacao.
+  - `docs/tasks-finalizacao.md` reescrito para separar baseline tecnico e passos manuais externos.
+  - `docs/index.md` ajustado para refletir leitura e status final.
+- README mantido com exemplos de PowerShell e bash, incluindo observacao de `curl.exe` no Windows.
+
+### SUPOSICOES
+
+- O repositorio ja esta tecnicamente pronto para release; passos restantes sao operacionais (painel/conta).
+
+### COMO VALIDAR
+
+1. Ler `docs/index.md` e conferir ordem de leitura.
+2. Rodar `npm test` e `npm run verify`.
+3. Rodar `BASE_URL=<url> API_KEY=<key> npm run smoke:deploy` no ambiente publico.
