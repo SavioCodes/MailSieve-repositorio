@@ -1,5 +1,7 @@
 # Security
 
+Arquivo de politica para o GitHub: `.github/SECURITY.md`.
+
 ## FATOS (da fonte validada)
 
 - `x-api-key` obrigatório.

@@ -297,3 +297,27 @@
 1. Ler `docs/index.md` e conferir ordem de leitura.
 2. Rodar `npm test` e `npm run verify`.
 3. Rodar `BASE_URL=<url> API_KEY=<key> npm run smoke:deploy` no ambiente publico.
+
+## 2026-02-08 (LICENSE e Security policy no GitHub)
+
+### FATOS
+
+- `LICENSE` atualizado para identificar titularidade de forma mais clara:
+  - `SavioCodes and MailSieve contributors`.
+- Criado `.github/SECURITY.md` com politica de seguranca para o repositorio:
+  - versoes suportadas,
+  - fluxo de reporte privado,
+  - alvo de resposta operacional,
+  - acao de rotacao de chave apos exposicao.
+- `docs/security.md` atualizado com referencia direta para `.github/SECURITY.md`.
+
+### SUPOSICOES
+
+- O canal preferencial de vulnerabilidade sera o fluxo privado de Security report do GitHub.
+
+### COMO VALIDAR
+
+1. Abrir o repositorio no GitHub e confirmar visibilidade de:
+   - `MIT license`,
+   - `Security policy`.
+2. Abrir `.github/SECURITY.md` e conferir o fluxo de reporte.
