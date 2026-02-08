@@ -14,12 +14,22 @@
     {
       "id": "key_8935d3c5e5ad",
       "name": "prod_main_v2",
-      "status": "active",
+      "status": "revoked",
       "created_at": "2026-02-08T18:33:29.643Z",
-      "revoked_at": null,
-      "rotated_to_id": null,
+      "revoked_at": "2026-02-08T18:44:30.789Z",
+      "rotated_to_id": "key_092cc640a1ec",
       "key_hash": "ac7892aa4ba24ea031afde6c4cd4013f90ebac0e57e9d77ee2f08fc5651be450",
       "salt": "d9d2e97ee6f169425a9fc11c4be0448d"
+    },
+    {
+      "id": "key_092cc640a1ec",
+      "name": "prod_main_v3",
+      "status": "active",
+      "created_at": "2026-02-08T18:44:30.789Z",
+      "revoked_at": null,
+      "rotated_to_id": null,
+      "key_hash": "23a30ce8237c757bfcc8e10cf2f67137aab3b8486d8847c02334c2f85be06db7",
+      "salt": "638068be6fd603e000386e0d8e29e02d"
     }
   ]
 }
