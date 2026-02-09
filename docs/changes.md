@@ -207,16 +207,16 @@
 1. Abrir `docs/prompt1-source.md` e conferir links/referencias.
 2. Revisar rapidamente se os fatos listados batem com as paginas oficiais.
 
-## 2026-02-08 (deploy publico validado)
+## 2026-02-08 (deploy publico - historico)
 
 ### FATOS
 
-- Deploy publico ativo no Render:
-  - `https://mailsieve-repositorio.onrender.com`
+- Endpoint usado na validacao daquela data:
+  - `SEU_ENDPOINT_PUBLICO`
 - Validacao do endpoint publico:
   - `GET /v1/health` com `x-api-key` retornou `200`.
 - Smoke test de deploy executado com sucesso:
-  - `BASE_URL=https://mailsieve-repositorio.onrender.com API_KEY=<key_ativa> npm run smoke:deploy`
+  - `BASE_URL=SEU_ENDPOINT_PUBLICO API_KEY=<key_ativa> npm run smoke:deploy`
   - retorno: `OK: smoke deploy passou`.
 
 ### SUPOSICOES

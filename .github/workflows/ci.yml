@@ -1,29 +1,40 @@
-name: ci
+name: CI
 
 on:
   push:
-    branches: ['**']
+    branches: [main]
   pull_request:
-    branches: ['**']
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  build-test-verify:
+  build-test:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Node
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: npm
 
-      - name: Install deps
+      - name: Install dependencies
         run: npm ci
+
+      - name: Lint
+        run: npm run lint --if-present
 
       - name: Test
         run: npm test
 
-      - name: Verify E2E local
+      - name: Build
+        run: npm run build --if-present
+
+      - name: Verify
         run: npm run verify
