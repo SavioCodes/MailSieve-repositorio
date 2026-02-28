@@ -1,62 +1,90 @@
-# MailSieve
+﻿# MailSieve
 
-## Visao Geral
-MailSieve e uma API HTTP para classificacao de email de cadastro, deteccao de dominio descartavel e risco lite com sinais explicaveis.
+[![CI](https://github.com/SavioCodes/MailSieve-repositorio/actions/workflows/ci.yml/badge.svg)](https://github.com/SavioCodes/MailSieve-repositorio/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
+[![OpenAPI](https://img.shields.io/badge/OpenAPI-3.0-6BA539)](./openapi.yaml)
 
-## Status do Projeto
-| Item | Valor |
-|:--|:--|
-| Maturidade | Em evolucao ativa |
-| Tipo | API backend |
-| Ultima atualizacao relevante | 2026-02 |
+MailSieve is an HTTP API that classifies signup emails for disposable-domain and lightweight risk signals.
 
-## Stack
-| Camada | Tecnologias |
-|:--|:--|
-| Runtime | Node.js 20+ |
-| API | Express |
-| Validacao | Zod |
-| Seguranca basica | Helmet, CORS |
-| Observabilidade | Pino |
-| Testes | Jest, Supertest |
+PT-BR: API para validacao de email com foco em sinal util, baixa latencia e operacao simples.
 
-## Estrutura
-- `src/`: codigo principal da API.
-- `tests/`: testes automatizados.
-- `docs/`: documentacao tecnica e historico.
-- `openapi.yaml`: contrato OpenAPI.
-- `scripts/`: utilitarios (keys, verify, update lists).
+## Why This Exists
 
-## Como Executar
-```bash
-npm install
-cp .env.example .env
-npm run build
-npm start
+Fraud and disposable addresses can degrade signup funnels. MailSieve provides quick risk hints while keeping infrastructure lightweight.
+
+## Architecture
+
+```mermaid
+flowchart LR
+  Client[Client App] --> API[Express API]
+  API --> Auth[API Key Auth]
+  API --> Rate[Rate Limiter]
+  API --> Core[MailSieve Service]
+  Core --> Lists[(Disposable/Typo Lists)]
+  Core --> Provider[Optional External Provider]
 ```
 
-## Endpoints Principais
+## Core Endpoints
+
 - `GET /v1/health`
 - `POST /v1/generate`
 - `POST /v1/batch`
 
-## Testes
+Contract: [`openapi.yaml`](./openapi.yaml)
+
+## Example Requests
+
 ```bash
+curl -X POST http://localhost:3000/v1/generate \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: <your-key>" \
+  -d '{"email":"user@mailinator.com"}'
+```
+
+```bash
+curl -X POST http://localhost:3000/v1/batch \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: <your-key>" \
+  -d '{"emails":["a@mailinator.com","b@gmail.com"],"concurrency":2}'
+```
+
+## Quickstart
+
+```bash
+npm install
+cp .env.example .env
+npm run dev
+```
+
+## Test and Quality Gates
+
+```bash
+npm run lint --if-present
 npm test
+npm run build
 npm run verify
 ```
 
-## CI
-Workflow padronizado em `.github/workflows/ci.yml`.
+## Local Infra with Docker Compose
 
-## Deploy
-Sem URL publica fixa no README.
-Use apenas endpoint estavel e validado no momento do deploy.
+```bash
+docker compose up --build
+```
+
+The compose setup includes a container healthcheck to ensure the API process is responsive.
+
+## Technical Decisions and Trade-offs
+
+- API key auth and in-process rate limiting keep setup simple for early-stage deployments.
+- Optional provider integration is isolated so the API can run in offline mode.
+- JSON/file-based runtime state is practical for small workloads, with migration path to external stores.
 
 ## Roadmap
-- ampliar base de dominios descartaveis
-- reforcar observabilidade e metricas de uso
-- melhorar testes de carga e resiliencia
 
-## Licenca
-MIT (`LICENSE`).
+- [ ] Add persistent rate-limit backend for multi-instance deployments
+- [ ] Add performance tests for high-volume batch requests
+- [ ] Add OpenAPI example responses for edge-case failures
+
+## License
+
+MIT. See [LICENSE](./LICENSE).
