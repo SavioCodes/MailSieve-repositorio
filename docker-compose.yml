@@ -1,0 +1,19 @@
+﻿services:
+  mailsieve:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file:
+      - .env.example
+    ports:
+      - "3000:3000"
+    healthcheck:
+      test:
+        - "CMD"
+        - "node"
+        - "-e"
+        - "require('http').get('http://localhost:3000/v1/health',{headers:{'x-api-key':'healthcheck'}},r=>process.exit(r.statusCode<500?0:1)).on('error',()=>process.exit(1))"
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
