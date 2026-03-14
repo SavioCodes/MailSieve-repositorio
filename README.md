@@ -1,6 +1,6 @@
 ﻿# MailSieve
 
-[![CI](https://github.com/SavioCodes/MailSieve-repositorio/actions/workflows/ci.yml/badge.svg)](https://github.com/SavioCodes/MailSieve-repositorio/actions/workflows/ci.yml)
+[![CI](https://github.com/SavioCodes/MailSieve/actions/workflows/ci.yml/badge.svg)](https://github.com/SavioCodes/MailSieve/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 [![OpenAPI](https://img.shields.io/badge/OpenAPI-3.0-6BA539)](./openapi.yaml)
 
