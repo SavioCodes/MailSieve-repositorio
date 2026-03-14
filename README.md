@@ -65,6 +65,18 @@ npm run build
 npm run verify
 ```
 
+## Operational Signals
+
+- Quality gates cover tests, build, and a separate `verify` path for deployment confidence.
+- The API contract is tracked in `openapi.yaml`, with local Docker support for repeatable validation.
+- The HTTP flow is easy to reproduce: health check, single email analysis, and batch analysis all run from documented commands.
+
+```bash
+npm test
+npm run build
+npm run verify
+```
+
 ## Local Infra with Docker Compose
 
 ```bash
